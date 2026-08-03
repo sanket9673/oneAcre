@@ -6,6 +6,7 @@ import { IntakeSection } from '@/components/IntakeSection';
 import { StreamingExecutionLog, ExecutionStep } from '@/components/StreamingExecutionLog';
 import { FeasibilityView } from '@/components/FeasibilityView';
 import { DeveloperMatchesView } from '@/components/DeveloperMatchesView';
+import TopographicHeroBg from '@/components/TopographicHeroBg';
 import { IngestResponse } from '@/types/api';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -41,7 +42,7 @@ export default function Home() {
       await new Promise((r) => setTimeout(r, 600));
       setExecutionSteps((prev) =>
         prev.map((s) =>
-          s.id === '1' ? { ...s, status: 'completed' } : s.id === '2' ? { ...s, status: 'active', detail: 'Gemini 1.5 Flash PII scrubbing applied' } : s
+          s.id === '1' ? { ...s, status: 'completed' } : s.id === '2' ? { ...s, status: 'active', detail: 'Gemini 3.5 Flash PII scrubbing applied' } : s
         )
       );
 
@@ -95,21 +96,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#181512] text-[#F7F4EE] flex flex-col font-sans-body relative overflow-x-hidden">
+      {/* Topographic Contour Background */}
+      <TopographicHeroBg />
+
       <Header />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6 z-10">
         <IntakeSection onSubmit={handlePipelineSubmit} isLoading={isLoading} />
 
         {isLoading || response ? <StreamingExecutionLog steps={executionSteps} /> : null}
 
         {response && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-zinc-900 border border-zinc-800">
-              <TabsTrigger value="feasibility" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-zinc-950">
+            <TabsList className="bg-[#24201C] border border-[#332D28] p-1 rounded-xl">
+              <TabsTrigger 
+                value="feasibility" 
+                className="data-[state=active]:bg-[#B8502B] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-350 cursor-pointer"
+              >
                 Feasibility & Financials
               </TabsTrigger>
-              <TabsTrigger value="developers" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-zinc-950">
+              <TabsTrigger 
+                value="developers" 
+                className="data-[state=active]:bg-[#B8502B] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-350 cursor-pointer"
+              >
                 Matched Developer Mandates ({response.matchedDevelopers?.length || 0})
               </TabsTrigger>
             </TabsList>
