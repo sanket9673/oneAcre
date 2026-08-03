@@ -21,21 +21,26 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function Header() {
   return (
-    <header className="w-full border-b border-white/10 bg-[#090A0F]/80 backdrop-blur-xl sticky top-0 z-50 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+    <header className="w-full border-b border-white/10 bg-[#090A0F]/80 backdrop-blur-xl sticky top-0 z-50 px-3 sm:px-6 py-3 flex items-center justify-between">
       {/* Left: Brand Logo & Status */}
-      <div className="flex items-center space-x-4">
-        <div className="h-9 w-9 rounded-lg bg-[#D96B27] flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-[#D96B27]/20 select-none">
+      <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+        <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-[#D96B27] flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-lg shadow-lg shadow-[#D96B27]/20 select-none">
           1a
         </div>
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="font-serif-heading font-extrabold text-[#F7F4EE] text-base tracking-tight">1acre.in</h1>
-            <span className="flex items-center space-x-1.5 bg-[#10B981]/10 text-[#10B981] text-[10px] px-2.5 py-0.5 rounded-full border border-[#10B981]/20 font-medium">
-              <span className="relative flex h-1.5 w-1.5">
+        <div className="min-w-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <h1 className="font-serif-heading font-extrabold text-[#F7F4EE] text-sm sm:text-base tracking-tight truncate">
+              1acre.in
+            </h1>
+            <span className="flex items-center space-x-1 bg-[#10B981]/10 text-[#10B981] text-[9px] sm:text-[10px] px-1.5 sm:px-2.5 py-0.5 rounded-full border border-[#10B981]/20 font-medium whitespace-nowrap">
+              <span className="relative flex h-1 w-1 sm:h-1.5 sm:w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#10B981]"></span>
+                <span className="relative inline-flex rounded-full h-1 sm:h-1.5 sm:w-1.5 bg-[#10B981]"></span>
               </span>
-              <span>System Live | Supabase pgvector Active</span>
+              <span>
+                <span className="xs:inline">System Live</span>
+                <span className="hidden sm:inline"> | pgvector Active</span>
+              </span>
             </span>
           </div>
         </div>
@@ -56,26 +61,26 @@ export function Header() {
       </div>
 
       {/* Right: GitHub & Demo CTA */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2.5 sm:space-x-4 shrink-0">
         <a
           href="https://github.com/sanket9673/oneAcre"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-[#A89F91] hover:text-[#F7F4EE] flex items-center space-x-1.5 transition-colors"
+          className="text-[11px] sm:text-xs text-[#A89F91] hover:text-[#F7F4EE] flex items-center space-x-1 sm:space-x-1.5 transition-colors"
         >
-          <GithubIcon className="w-4 h-4" />
+          <GithubIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">View Source</span>
-          <ExternalLink className="w-3 h-3 opacity-50" />
+          <ExternalLink className="w-3 h-3 opacity-50 hidden xs:inline" />
         </a>
 
         <a
           href="https://linkedin.com/in/sanket-kisan-chavhan-930042273"
           target="_blank"
           rel="noopener noreferrer"
-          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-semibold rounded-xl group bg-gradient-to-br from-[#D96B27]/40 to-transparent hover:from-[#D96B27] hover:to-[#F59E0B] transition-all cursor-pointer animate-none"
+          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-[10px] sm:text-xs font-semibold rounded-xl group bg-gradient-to-br from-[#D96B27]/40 to-transparent hover:from-[#D96B27] hover:to-[#F59E0B] transition-all cursor-pointer animate-none"
         >
-          <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-[#090A0F] rounded-[10px] group-hover:bg-opacity-0 text-[#F7F4EE] group-hover:text-white">
-            Book Founder Demo
+          <span className="relative px-2.5 py-1.5 sm:px-4 sm:py-2 transition-all ease-in duration-75 bg-[#090A0F] rounded-[10px] group-hover:bg-opacity-0 text-[#F7F4EE] group-hover:text-white">
+            Book Demo
           </span>
         </a>
       </div>

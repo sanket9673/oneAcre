@@ -38,11 +38,11 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
   const strokeDashoffset = circumference - (score / maxScore) * circumference;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
       {/* Left Column: Stat Cards and Gauge */}
-      <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+      <div className="lg:col-span-5 flex flex-col justify-between space-y-4 sm:space-y-6">
         {/* Feasibility Gauge */}
-        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between flex-1">
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 sm:p-6 relative overflow-hidden flex flex-col justify-between flex-1">
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#10B981]/20 to-transparent" />
           
           <div className="flex items-center justify-between mb-4">
@@ -54,7 +54,7 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
             </span>
           </div>
 
-          <div className="flex items-center space-x-6 my-auto">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:space-x-6 my-auto">
             {/* SVG Circular Gauge */}
             <div className="relative flex items-center justify-center w-24 h-24 shrink-0">
               <svg className="w-full h-full transform -rotate-90">
@@ -87,7 +87,7 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
 
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold text-[#F7F4EE] tracking-tight">Viability Assessment</h4>
-              <p className="text-[11px] text-[#A89F91] leading-relaxed max-w-[200px]">
+              <p className="text-[11px] text-[#A89F91] leading-relaxed max-w-xs sm:max-w-[200px]">
                 {report.summary}
               </p>
             </div>
@@ -95,55 +95,55 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
         </div>
 
         {/* Planning Stats Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white/[0.03] border border-white/10 p-4 rounded-2xl hover:border-white/20 transition duration-300">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-3 sm:gap-4">
+          <div className="bg-white/[0.03] border border-white/10 p-3 sm:p-4 rounded-2xl hover:border-white/20 transition duration-300">
             <div className="flex items-center space-x-1.5 text-[#A89F91] mb-1">
-              <Ruler className="w-3.5 h-3.5 text-[#D96B27]" />
-              <span className="text-[9px] uppercase font-bold tracking-widest">Gross Extent</span>
+              <Ruler className="w-3.5 h-3.5 text-[#D96B27] shrink-0" />
+              <span className="text-[9px] uppercase font-bold tracking-widest truncate">Gross Extent</span>
             </div>
             <p className="text-sm font-bold text-white font-mono-data">
               {report.normalizedUnits.acres} Acres
             </p>
-            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block">
+            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block truncate">
               {report.planning.grossPlotAreaSqYards.toLocaleString()} Sq Yd
             </span>
           </div>
 
-          <div className="bg-white/[0.03] border border-white/10 p-4 rounded-2xl hover:border-white/20 transition duration-300">
+          <div className="bg-white/[0.03] border border-white/10 p-3 sm:p-4 rounded-2xl hover:border-white/20 transition duration-300">
             <div className="flex items-center space-x-1.5 text-[#A89F91] mb-1">
-              <Building2 className="w-3.5 h-3.5 text-[#D96B27]" />
-              <span className="text-[9px] uppercase font-bold tracking-widest">Deduction</span>
+              <Building2 className="w-3.5 h-3.5 text-[#D96B27] shrink-0" />
+              <span className="text-[9px] uppercase font-bold tracking-widest truncate">Deduction</span>
             </div>
-            <p className="text-sm font-bold text-[#D96B27] font-mono-data">
+            <p className="text-sm font-bold text-[#D96B27] font-mono-data truncate">
               -{(report.planning.openSpaceSurrenderPct * 100).toFixed(0)}% Open Space
             </p>
-            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block">
+            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block truncate">
               {report.planning.surrenderedAreaSqYards.toLocaleString()} Sq Yd
             </span>
           </div>
 
-          <div className="bg-white/[0.03] border border-white/10 p-4 rounded-2xl hover:border-white/20 transition duration-300">
+          <div className="bg-white/[0.03] border border-white/10 p-3 sm:p-4 rounded-2xl hover:border-white/20 transition duration-300">
             <div className="flex items-center space-x-1.5 text-[#A89F91] mb-1">
-              <CheckCircle className="w-3.5 h-3.5 text-[#F59E0B]" />
-              <span className="text-[9px] uppercase font-bold tracking-widest">FSI Level</span>
+              <CheckCircle className="w-3.5 h-3.5 text-[#F59E0B] shrink-0" />
+              <span className="text-[9px] uppercase font-bold tracking-widest truncate">FSI Level</span>
             </div>
-            <p className="text-sm font-bold text-[#F59E0B] font-mono-data">
+            <p className="text-sm font-bold text-[#F59E0B] font-mono-data truncate">
               {report.planning.applicableFsi}x Ratio
             </p>
-            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block">
+            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block truncate">
               Road: {report.input.roadWidthFt}ft
             </span>
           </div>
 
-          <div className="bg-white/[0.03] border border-white/10 p-4 rounded-2xl hover:border-white/20 transition duration-300">
+          <div className="bg-white/[0.03] border border-white/10 p-3 sm:p-4 rounded-2xl hover:border-white/20 transition duration-300">
             <div className="flex items-center space-x-1.5 text-[#A89F91] mb-1">
-              <IndianRupee className="w-3.5 h-3.5 text-[#10B981]" />
-              <span className="text-[9px] uppercase font-bold tracking-widest">Net BUA</span>
+              <IndianRupee className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
+              <span className="text-[9px] uppercase font-bold tracking-widest truncate">Net BUA</span>
             </div>
-            <p className="text-sm font-bold text-[#10B981] font-mono-data">
+            <p className="text-sm font-bold text-[#10B981] font-mono-data truncate">
               {(report.planning.permissibleBuaSqFt / 100000).toFixed(2)} L sqft
             </p>
-            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block">
+            <span className="text-[10px] text-[#A89F91]/50 font-mono-data mt-0.5 block truncate">
               {report.planning.permissibleBuaSqFt.toLocaleString()} sqft
             </span>
           </div>
@@ -151,20 +151,20 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
       </div>
 
       {/* Right Column: Financial Bar Chart */}
-      <div className="lg:col-span-7 bg-[#121417] border border-white/10 rounded-2xl p-6 flex flex-col justify-between">
+      <div className="lg:col-span-7 bg-[#121417] border border-white/10 rounded-2xl p-4 sm:p-6 flex flex-col justify-between overflow-hidden">
         <div>
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col xs:flex-row justify-between items-start gap-3 mb-4">
             <div>
               <h3 className="text-sm font-bold text-white">JV Yield Projections</h3>
               <p className="text-xs text-[#A89F91]/60 mt-0.5">Estimated gross development value calculations</p>
             </div>
-            <div className="bg-[#10B981]/10 border border-[#10B981]/20 px-3 py-1 rounded-xl text-right">
+            <div className="bg-[#10B981]/10 border border-[#10B981]/20 px-3 py-1 rounded-xl text-left xs:text-right shrink-0">
               <span className="text-[9px] text-[#A89F91]/60 font-bold uppercase tracking-wide block">Est. GDV Margin</span>
               <span className="text-xs font-bold text-[#10B981] font-mono-data">{report.financials.developerNetMarginPct.toFixed(2)}%</span>
             </div>
           </div>
 
-          <div className="h-64 w-full font-mono text-[10px] mt-2">
+          <div className="h-56 sm:h-64 w-full overflow-hidden mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -191,7 +191,7 @@ export function FeasibilityView({ report }: FeasibilityViewProps) {
         </div>
 
         {/* Metric Overview Bar */}
-        <div className="grid grid-cols-3 gap-3 border-t border-white/5 pt-4 mt-4">
+        <div className="grid grid-cols-1 xs:grid-cols-3 gap-2.5 sm:gap-3 border-t border-white/5 pt-4 mt-4">
           <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl text-center">
             <span className="text-[9px] uppercase text-[#A89F91] block">Total GDV</span>
             <span className="text-sm font-bold text-white font-mono-data">₹{(report.financials.gdv / 10000000).toFixed(2)} Cr</span>

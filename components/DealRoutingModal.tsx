@@ -54,7 +54,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-zinc-950/80 backdrop-blur-md">
       {/* Self-contained Print Stylesheet */}
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
@@ -71,19 +71,19 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
         }
       `}} />
 
-      <div className="bg-[#121417] border border-white/10 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-[#121417] border border-white/10 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200 max-h-[90vh]">
         
         {/* Modal Header */}
-        <div className="border-b border-white/5 p-5 flex items-center justify-between bg-[#090A0F]/60">
-          <div>
+        <div className="border-b border-white/5 p-4 sm:p-5 flex items-center justify-between bg-[#090A0F]/60">
+          <div className="min-w-0">
             <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-[#D96B27]" />
-              <h3 className="text-[10px] uppercase font-bold tracking-widest text-[#A89F91]">Deal Router Workspace</h3>
+              <Shield className="w-4 h-4 text-[#D96B27] shrink-0" />
+              <h3 className="text-[10px] uppercase font-bold tracking-widest text-[#A89F91] truncate">Deal Router Workspace</h3>
             </div>
-            <h2 className="text-base font-semibold text-white mt-0.5">{dev.developer_name}</h2>
+            <h2 className="text-base font-semibold text-white mt-0.5 truncate max-w-[200px] sm:max-w-none">{dev.developer_name}</h2>
           </div>
           
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 shrink-0">
             <span className="bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-xs px-2.5 py-1 rounded-full font-bold">
               {matchPct}% Match
             </span>
@@ -97,7 +97,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
         </div>
 
         {/* Modal Content */}
-        <div className="p-6 space-y-5 flex-1 overflow-y-auto max-h-[70vh]">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 overflow-y-auto max-h-[60vh] sm:max-h-[70vh]">
           
           {/* Pitchslip Preview */}
           <div className="space-y-2">
@@ -105,12 +105,12 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
               Generated WhatsApp Executive Pitch Slip
             </label>
             <div className="relative">
-              <pre className="w-full bg-[#090A0F] border border-white/10 rounded-xl p-4 font-mono text-[11px] text-white/90 whitespace-pre-wrap leading-relaxed">
+              <pre className="w-full bg-[#090A0F] border border-white/10 rounded-xl p-3.5 sm:p-4 font-mono text-[10px] sm:text-[11px] text-white/90 whitespace-pre-wrap leading-relaxed max-h-48 sm:max-h-60 overflow-y-auto">
                 {formattedText}
               </pre>
               <button
                 onClick={handleCopy}
-                className="absolute top-3 right-3 bg-[#121417] border border-white/10 hover:bg-white/5 text-zinc-300 p-2 rounded-lg transition flex items-center space-x-1 cursor-pointer"
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-[#121417] border border-white/10 hover:bg-white/5 text-zinc-300 p-2 rounded-lg transition flex items-center space-x-1 cursor-pointer"
                 title="Copy to Clipboard"
               >
                 {copied ? (
@@ -126,7 +126,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
           </div>
 
           {/* Core Matching Criteria Metadata */}
-          <div className="bg-[#090A0F] p-4 rounded-xl border border-white/5 grid grid-cols-2 gap-4">
+          <div className="bg-[#090A0F] p-3.5 sm:p-4 rounded-xl border border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
             <div className="flex items-start space-x-2.5">
               <Target className="w-4 h-4 text-[#F59E0B] mt-0.5 shrink-0" />
               <div>
@@ -139,9 +139,9 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
 
             <div className="flex items-start space-x-2.5">
               <MapPin className="w-4 h-4 text-[#D96B27] mt-0.5 shrink-0" />
-              <div>
+              <div className="min-w-0">
                 <p className="text-[9px] text-[#A89F91]/60 uppercase font-bold tracking-wider">Preferred Hubs</p>
-                <p className="text-xs text-white/90 font-medium mt-0.5 truncate max-w-[150px]" title={dev.preferred_locations.join(', ')}>
+                <p className="text-xs text-white/90 font-medium mt-0.5 truncate max-w-full" title={dev.preferred_locations.join(', ')}>
                   {dev.preferred_locations.join(', ')}
                 </p>
               </div>
@@ -151,35 +151,44 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
         </div>
 
         {/* Modal Actions Footer */}
-        <div className="border-t border-white/5 p-5 bg-[#090A0F]/60 flex items-center gap-3">
-          <button
-            onClick={handleCopy}
-            className="flex-1 bg-[#121417] hover:bg-white/5 text-white font-semibold text-xs py-3 px-4 rounded-xl border border-white/10 transition flex items-center justify-center space-x-2 cursor-pointer"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4 text-[#10B981]" />
-                <span>Copied to Clipboard!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4 text-[#D96B27]" />
-                <span>Copy WhatsApp Pitch</span>
-              </>
-            )}
-          </button>
+        <div className="border-t border-white/5 p-4 sm:p-5 bg-[#090A0F]/60 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+          <div className="flex gap-2 sm:flex-1">
+            <button
+              onClick={handleCopy}
+              className="flex-1 bg-[#121417] hover:bg-white/5 text-white font-semibold text-xs py-3 px-3 sm:px-4 rounded-xl border border-white/10 transition flex items-center justify-center space-x-1.5 sm:space-x-2 cursor-pointer"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-[#10B981]" />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 text-[#D96B27]" />
+                  <span className="truncate">Copy Pitch</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={handlePrint}
+              className="bg-[#121417] hover:bg-white/5 text-zinc-300 p-3 rounded-xl border border-white/10 transition cursor-pointer sm:hidden flex items-center justify-center shrink-0"
+              title="Export Deal Dossier (Print / PDF)"
+            >
+              <Printer className="w-4 h-4 text-[#F59E0B]" />
+            </button>
+          </div>
 
           <button
             onClick={handleWhatsAppSend}
             className="flex-1 bg-gradient-to-r from-[#D96B27] to-[#B8502B] hover:from-[#E07A38] hover:to-[#C55731] text-white font-bold text-xs py-3 px-4 rounded-xl transition flex items-center justify-center space-x-2 shadow-lg shadow-[#D96B27]/10 cursor-pointer"
           >
-            <Send className="w-4 h-4 text-white" />
+            <Send className="w-4 h-4 text-white shrink-0" />
             <span>Route via WhatsApp</span>
           </button>
 
           <button
             onClick={handlePrint}
-            className="bg-[#121417] hover:bg-white/5 text-zinc-300 p-3 rounded-xl border border-white/10 transition cursor-pointer"
+            className="bg-[#121417] hover:bg-white/5 text-zinc-300 p-3 rounded-xl border border-white/10 transition cursor-pointer hidden sm:block shrink-0"
             title="Export Deal Dossier (Print / PDF)"
           >
             <Printer className="w-4 h-4 text-[#F59E0B]" />

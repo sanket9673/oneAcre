@@ -78,18 +78,18 @@ export function IntakeSection({ onSubmit, isLoading }: IntakeSectionProps) {
   };
 
   return (
-    <div className="bg-[#121417] border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+    <div className="bg-[#121417] border border-white/10 rounded-2xl p-4 sm:p-6 shadow-2xl relative overflow-hidden">
       {/* Top ambient hairline gradient */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D96B27]/40 to-transparent" />
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center space-x-2">
           <FileText className="w-4 h-4 text-[#D96B27]" />
           <h2 className="text-sm font-semibold text-[#F7F4EE] tracking-tight">Vernacular WhatsApp / Audio Intake</h2>
         </div>
         <button
           onClick={handlePreFill}
-          className="text-xs text-[#A8C39B] hover:text-white flex items-center space-x-1 bg-[#10B981]/10 border border-[#10B981]/20 hover:border-[#10B981]/50 px-3 py-1.5 rounded-lg transition duration-300 cursor-pointer"
+          className="text-xs text-[#A8C39B] hover:text-white flex items-center justify-center space-x-1 bg-[#10B981]/10 border border-[#10B981]/20 hover:border-[#10B981]/50 px-3 py-1.5 rounded-lg transition duration-300 cursor-pointer w-full sm:w-auto"
         >
           <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
           <span>Pre-fill Sample Deal</span>
@@ -101,20 +101,20 @@ export function IntakeSection({ onSubmit, isLoading }: IntakeSectionProps) {
         value={textInput}
         onChange={(e) => setTextInput(e.target.value)}
         placeholder="Paste WhatsApp deal message or raw land voice text here... (e.g., 2.5 acres in Shadnagar, 60ft road, asking 2.5Cr/acre for JV)"
-        className="w-full bg-[#090A0F] border border-white/10 rounded-xl p-4 text-sm text-[#F7F4EE] placeholder-[#A89F91]/30 focus:outline-none focus:border-[#D96B27] focus:ring-1 focus:ring-[#D96B27]/50 transition duration-300 resize-none font-mono text-xs leading-relaxed"
+        className="w-full bg-[#090A0F] border border-white/10 rounded-xl p-3 sm:p-4 text-xs sm:text-sm text-[#F7F4EE] placeholder-[#A89F91]/30 focus:outline-none focus:border-[#D96B27] focus:ring-1 focus:ring-[#D96B27]/50 transition duration-300 resize-none font-mono leading-relaxed"
       />
 
       {/* Attachment status badge */}
       {attachedFileName && (
-        <div className="mt-3 flex items-center justify-between bg-[#D96B27]/10 border border-[#D96B27]/25 px-4 py-2 rounded-xl text-xs text-amber-300">
-          <div className="flex items-center space-x-2">
-            <Paperclip className="w-3.5 h-3.5 text-[#D96B27]" />
-            <span>Audio File Attached: <strong>{attachedFileName}</strong></span>
+        <div className="mt-3 flex flex-col xs:flex-row xs:items-center justify-between bg-[#D96B27]/10 border border-[#D96B27]/25 p-3 sm:px-4 sm:py-2 rounded-xl text-xs text-amber-300 gap-2">
+          <div className="flex items-center space-x-2 min-w-0">
+            <Paperclip className="w-3.5 h-3.5 text-[#D96B27] shrink-0" />
+            <span className="truncate">Audio File Attached: <strong>{attachedFileName}</strong></span>
           </div>
           <button
             type="button"
             onClick={handleClearAttachment}
-            className="text-red-400 hover:text-red-300 transition-colors pl-2 cursor-pointer font-bold flex items-center space-x-1"
+            className="text-red-400 hover:text-red-300 transition-colors pl-0 xs:pl-2 cursor-pointer font-bold flex items-center space-x-1 shrink-0 self-end xs:self-auto"
           >
             <X className="w-3.5 h-3.5" />
             <span>Remove</span>
@@ -122,32 +122,37 @@ export function IntakeSection({ onSubmit, isLoading }: IntakeSectionProps) {
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap gap-3 items-center justify-between">
-        <div className="flex flex-wrap gap-2.5">
+      <div className="mt-4 flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-2.5 w-full lg:w-auto">
           {/* Demo trigger */}
           <button
             onClick={handleAudioDemoClick}
             disabled={isLoading}
-            className="relative flex items-center space-x-2 bg-[#090A0F] hover:bg-[#121417] text-[#A89F91] hover:text-[#F7F4EE] text-xs px-4 py-2.5 rounded-xl border border-white/10 hover:border-[#10B981]/30 transition duration-300 group cursor-pointer"
+            className="relative flex items-center justify-center space-x-2 bg-[#090A0F] hover:bg-[#121417] text-[#A89F91] hover:text-[#F7F4EE] text-xs px-3.5 py-2.5 rounded-xl border border-white/10 hover:border-[#10B981]/30 transition duration-300 group cursor-pointer w-full sm:w-auto"
           >
             <span className="absolute -inset-[1px] rounded-xl border border-[#10B981]/20 animate-pulse group-hover:border-[#10B981]/40 pointer-events-none" />
-            <span className="relative flex h-1.5 w-1.5">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#10B981]"></span>
             </span>
-            <Play className="w-3.5 h-3.5 text-[#10B981] fill-[#10B981]/10 group-hover:scale-110 transition duration-300" />
-            <span>Play Vernacular Voice Note (Audio Demo)</span>
+            <Play className="w-3.5 h-3.5 text-[#10B981] fill-[#10B981]/10 group-hover:scale-110 transition duration-300 shrink-0" />
+            <span className="truncate">Play Vernacular Voice Note (Audio Demo)</span>
           </button>
 
           {/* Real file upload button */}
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
-            className="flex items-center space-x-2 bg-[#090A0F] hover:bg-[#121417] text-[#A89F91] hover:text-[#F7F4EE] text-xs px-4 py-2.5 rounded-xl border border-white/10 hover:border-[#D96B27]/30 transition duration-300 cursor-pointer"
+            className="flex items-center justify-center space-x-2 bg-[#090A0F] hover:bg-[#121417] text-[#A89F91] hover:text-[#F7F4EE] text-xs px-3.5 py-2.5 rounded-xl border border-white/10 hover:border-[#D96B27]/30 transition duration-300 cursor-pointer w-full sm:w-auto"
             type="button"
           >
-            <Paperclip className="w-3.5 h-3.5 text-[#D96B27]" />
-            <span>📎 Upload Voice Note or WhatsApp Export (.mp3, .wav, .m4a, .txt)</span>
+            <Paperclip className="w-3.5 h-3.5 text-[#D96B27] shrink-0" />
+            <span className="truncate">
+              📎 <span>Upload </span>
+              <span className="hidden xs:inline">Voice Note or WhatsApp Export</span>
+              <span className="xs:hidden">Voice/WhatsApp</span>
+              <span className="hidden sm:inline"> (.mp3, .wav, .m4a, .txt)</span>
+            </span>
           </button>
         </div>
 
@@ -163,7 +168,7 @@ export function IntakeSection({ onSubmit, isLoading }: IntakeSectionProps) {
         <button
           onClick={handleRunPipeline}
           disabled={isLoading || (!textInput.trim() && !attachedAudioBase64)}
-          className="flex items-center space-x-2 bg-gradient-to-r from-[#D96B27] to-[#B8502B] hover:from-[#E07A38] hover:to-[#C55731] disabled:from-[#121417] disabled:to-[#121417] disabled:text-[#A89F91]/40 disabled:border-white/5 text-white font-semibold text-xs px-6 py-3 rounded-xl transition duration-300 hover:-translate-y-[1px] active:translate-y-[1px] shadow-lg shadow-[#D96B27]/10 ml-auto cursor-pointer"
+          className="flex items-center justify-center space-x-2 bg-gradient-to-r from-[#D96B27] to-[#B8502B] hover:from-[#E07A38] hover:to-[#C55731] disabled:from-[#121417] disabled:to-[#121417] disabled:text-[#A89F91]/40 disabled:border-white/5 text-white font-semibold text-xs px-6 py-3 rounded-xl transition duration-300 hover:-translate-y-[1px] active:translate-y-[1px] shadow-lg shadow-[#D96B27]/10 cursor-pointer w-full lg:w-auto justify-center shrink-0"
         >
           {isLoading ? (
             <>
