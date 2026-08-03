@@ -1,3 +1,6 @@
+import { loadEnvConfig } from '@next/env';
+loadEnvConfig(process.cwd());
+
 import { extractLandParcelWithGemini, generateGeminiEmbedding } from '../lib/gemini';
 import { calculateArchitectFeasibility } from '../lib/planning-engine';
 import { supabase } from '../lib/supabase';
@@ -17,7 +20,21 @@ async function runApiIngestTest() {
   console.log(rawWhatsappMessage.trim());
 
   console.log('\n2. EXECUTING MULTIMODAL EXTRACTION & PII SCRUBBING...');
-  const extractedData = await extractLandParcelWithGemini(rawWhatsappMessage);
+  let extractedData;
+  const groqKey = process.env.GROQ_API_KEY;
+  if (groqKey && groqKey !== 'your_groq_api_key') {
+    try {
+      console.log('Attempting extraction via Groq llama-3.3-70b-versatile...');
+      const { extractLandWithGroq } = await import('../lib/groq');
+      extractedData = await extractLandWithGroq(rawWhatsappMessage);
+    } catch (err) {
+      console.warn('Groq extraction failed, falling back to Gemini...', err);
+    }
+  }
+  if (!extractedData) {
+    console.log('Attempting extraction via Gemini...');
+    extractedData = await extractLandParcelWithGemini(rawWhatsappMessage);
+  }
   console.log(JSON.stringify(extractedData, null, 2));
 
   console.log('\n3. COMPUTING STATUTORY & JV FINANCIAL FEASIBILITY...');

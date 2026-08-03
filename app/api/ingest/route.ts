@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { InboundPayloadSchema, IngestResponse } from '@/types/api';
 import { extractLandParcelWithGemini, generateGeminiEmbedding, normalizeVectorDimension } from '@/lib/gemini';
+import { extractLandWithGroq } from '@/lib/groq';
 import { calculateArchitectFeasibility } from '@/lib/planning-engine';
 import { supabase } from '@/lib/supabase';
 import { localFallbackMatch } from '@/lib/mock-data';
@@ -26,8 +27,39 @@ export async function POST(req: Request) {
       );
     }
 
-    // Step A: Gemini Flash AI Multimodal Extraction & PII Scrubbing
-    const extractedData = await extractLandParcelWithGemini(textPrompt, audioBase64, mimeType);
+    // Step A: Multi-tier fallback pipeline for Extraction & PII Scrubbing
+    let extractedData;
+    let extractionError = null;
+
+    // Tier 1 (Primary): If GROQ_API_KEY is present, execute extractLandWithGroq()
+    const groqKey = process.env.GROQ_API_KEY;
+    const hasGroqKey = groqKey && groqKey !== 'your_groq_api_key';
+    if (hasGroqKey) {
+      try {
+        console.log('[Ingest Engine] Attempting Tier-1 extraction via Groq...');
+        extractedData = await extractLandWithGroq(textPrompt, audioBase64, mimeType);
+      } catch (err) {
+        extractionError = err;
+        console.warn('[Ingest Engine] Tier-1 Groq extraction failed, falling back to Tier-2...');
+      }
+    }
+
+    // Tier 2 (Secondary): Fall back to Gemini Flash API
+    if (!extractedData) {
+      try {
+        console.log('[Ingest Engine] Attempting Tier-2 extraction via Gemini...');
+        extractedData = await extractLandParcelWithGemini(textPrompt, audioBase64, mimeType);
+      } catch (err) {
+        extractionError = err;
+        console.warn('[Ingest Engine] Tier-2 Gemini extraction failed, falling back to Tier-3...');
+      }
+    }
+
+    // Tier 3 (Safety Net): Fallback to local structured mock data
+    if (!extractedData) {
+      console.warn('[Ingest Engine] All AI tiers failed. Activating Tier-3 mock fallback.');
+      throw extractionError || new Error('All AI extraction endpoints failed.');
+    }
 
     // Step B: Deterministic Planning & JV Financial Feasibility Computation
     const feasibilityReport = calculateArchitectFeasibility({
