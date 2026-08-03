@@ -1,64 +1,128 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { Header } from '@/components/Header';
+import { IntakeSection } from '@/components/IntakeSection';
+import { StreamingExecutionLog, ExecutionStep } from '@/components/StreamingExecutionLog';
+import { FeasibilityView } from '@/components/FeasibilityView';
+import { DeveloperMatchesView } from '@/components/DeveloperMatchesView';
+import { IngestResponse } from '@/types/api';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('feasibility');
+  const [response, setResponse] = useState<IngestResponse | null>(null);
+
+  const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([
+    { id: '1', label: '⚡ Ingesting Audio / Vernacular Text Payload...', status: 'pending' },
+    { id: '2', label: '⚡ Scrubbing PII (Phone numbers, Aadhaar, Landowner names)...', status: 'pending' },
+    { id: '3', label: '⚡ Normalizing Land Units & Statutory Deductions (GO 168)...', status: 'pending' },
+    { id: '4', label: '⚡ Computing Financial Yield & Developer Profit Margins...', status: 'pending' },
+    { id: '5', label: '⚡ Generating Gemini Embedding & Searching pgvector DB...', status: 'pending' },
+  ]);
+
+  const handlePipelineSubmit = async (textInput: string, isAudioDemo: boolean = false) => {
+    setIsLoading(true);
+    // When starting a new submission, we reset the response so the tabs hide
+    setResponse(null);
+
+    // Reset steps
+    setExecutionSteps([
+      { id: '1', label: '⚡ Ingesting Audio / Vernacular Text Payload...', status: 'active', detail: isAudioDemo ? 'Audio voice note loaded' : 'Raw text message received' },
+      { id: '2', label: '⚡ Scrubbing PII (Phone numbers, Aadhaar, Landowner names)...', status: 'pending' },
+      { id: '3', label: '⚡ Normalizing Land Units & Statutory Deductions (GO 168)...', status: 'pending' },
+      { id: '4', label: '⚡ Computing Financial Yield & Developer Profit Margins...', status: 'pending' },
+      { id: '5', label: '⚡ Generating Gemini Embedding & Searching pgvector DB...', status: 'pending' },
+    ]);
+
+    try {
+      // Step 1 complete -> Step 2
+      await new Promise((r) => setTimeout(r, 600));
+      setExecutionSteps((prev) =>
+        prev.map((s) =>
+          s.id === '1' ? { ...s, status: 'completed' } : s.id === '2' ? { ...s, status: 'active', detail: 'Gemini 1.5 Flash PII scrubbing applied' } : s
+        )
+      );
+
+      // Execute API call
+      const res = await fetch('/api/ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ textPrompt: textInput }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data: IngestResponse = await res.json();
+
+      // Step 2 & 3
+      await new Promise((r) => setTimeout(r, 600));
+      setExecutionSteps((prev) =>
+        prev.map((s) =>
+          s.id === '2' ? { ...s, status: 'completed' } : s.id === '3' ? { ...s, status: 'active', detail: '15% open space surrendered' } : s
+        )
+      );
+
+      // Step 4
+      await new Promise((r) => setTimeout(r, 600));
+      setExecutionSteps((prev) =>
+        prev.map((s) =>
+          s.id === '3' ? { ...s, status: 'completed' } : s.id === '4' ? { ...s, status: 'active', detail: 'JV 40/60 matrix computed' } : s
+        )
+      );
+
+      // Step 5
+      await new Promise((r) => setTimeout(r, 600));
+      setExecutionSteps((prev) =>
+        prev.map((s) =>
+          s.id === '4' ? { ...s, status: 'completed' } : s.id === '5' ? { ...s, status: 'active', detail: 'Supabase vector search completed' } : s
+        )
+      );
+
+      await new Promise((r) => setTimeout(r, 400));
+      setExecutionSteps((prev) => prev.map((s) => ({ ...s, status: 'completed' })));
+
+      setResponse(data);
+      setActiveTab('feasibility');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
+      <Header />
+
+      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <IntakeSection onSubmit={handlePipelineSubmit} isLoading={isLoading} />
+
+        {isLoading || response ? <StreamingExecutionLog steps={executionSteps} /> : null}
+
+        {response && (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-zinc-900 border border-zinc-800">
+              <TabsTrigger value="feasibility" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-zinc-950">
+                Feasibility & Financials
+              </TabsTrigger>
+              <TabsTrigger value="developers" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-zinc-950">
+                Matched Developer Mandates ({response.matchedDevelopers?.length || 0})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="feasibility" className="mt-4">
+              <FeasibilityView report={response.feasibilityReport} />
+            </TabsContent>
+
+            <TabsContent value="developers" className="mt-4">
+              <DeveloperMatchesView matches={response.matchedDevelopers} />
+            </TabsContent>
+          </Tabs>
+        )}
       </main>
     </div>
   );
