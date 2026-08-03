@@ -1,4 +1,5 @@
 # 🏞️ 1acre Smart Deal Engine
+Deployed Link : https://oneacredev.netlify.app/
 
 ### Multimodal AI Ingestion, Architectural Feasibility & Developer Matching Platform
 
