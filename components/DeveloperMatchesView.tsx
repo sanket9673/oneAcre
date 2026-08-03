@@ -1,14 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DeveloperMatch } from '@/types/api';
+import { FeasibilityReport } from '@/types/planning';
 import { Target, MapPin, ArrowRight } from 'lucide-react';
+import { DealRoutingModal } from './DealRoutingModal';
 
 interface DeveloperMatchesViewProps {
   matches: DeveloperMatch[];
+  report: FeasibilityReport;
 }
 
-export function DeveloperMatchesView({ matches }: DeveloperMatchesViewProps) {
+export function DeveloperMatchesView({ matches, report }: DeveloperMatchesViewProps) {
+  const [selectedDev, setSelectedDev] = useState<DeveloperMatch | null>(null);
+
   if (!matches || matches.length === 0) {
     return (
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center text-zinc-400">
@@ -62,7 +67,10 @@ export function DeveloperMatchesView({ matches }: DeveloperMatchesViewProps) {
                 </div>
               </div>
 
-              <button className="w-full bg-zinc-800 hover:bg-emerald-600 hover:text-zinc-950 text-zinc-200 font-semibold text-xs py-2 rounded-lg transition flex items-center justify-center space-x-1.5">
+              <button
+                onClick={() => setSelectedDev(dev)}
+                className="w-full bg-zinc-800 hover:bg-emerald-600 hover:text-zinc-950 text-zinc-200 font-semibold text-xs py-2 rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer"
+              >
                 <span>Route Deal to Developer</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -70,6 +78,14 @@ export function DeveloperMatchesView({ matches }: DeveloperMatchesViewProps) {
           );
         })}
       </div>
+
+      {selectedDev && (
+        <DealRoutingModal
+          dev={selectedDev}
+          report={report}
+          onClose={() => setSelectedDev(null)}
+        />
+      )}
     </div>
   );
 }

@@ -119,7 +119,7 @@ export default function Home() {
             </TabsContent>
 
             <TabsContent value="developers" className="mt-4">
-              <DeveloperMatchesView matches={response.matchedDevelopers} />
+              <DeveloperMatchesView matches={response.matchedDevelopers} report={response.feasibilityReport} />
             </TabsContent>
           </Tabs>
         )}
