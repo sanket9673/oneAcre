@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { InboundPayloadSchema, IngestResponse } from '@/types/api';
-import { extractLandParcelWithGemini, generateGeminiEmbedding } from '@/lib/gemini';
+import { extractLandParcelWithGemini, generateGeminiEmbedding, normalizeVectorDimension } from '@/lib/gemini';
 import { calculateArchitectFeasibility } from '@/lib/planning-engine';
 import { supabase } from '@/lib/supabase';
 import { localFallbackMatch } from '@/lib/mock-data';
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     // Step C: Vector Embedding & Supabase Vector Similarity Search
     const summaryToEmbed = `${extractedData.extentAcres} acres land in ${extractedData.location} on ${extractedData.roadWidthFt}ft road for ${extractedData.dealType}. ${extractedData.rawCleanedSummary}`;
-    const queryVector = await generateGeminiEmbedding(summaryToEmbed);
+    const queryVector = normalizeVectorDimension(await generateGeminiEmbedding(summaryToEmbed));
 
     let matchedDevelopers: any[] = [];
     let isDbConnected = false;

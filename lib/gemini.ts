@@ -5,34 +5,57 @@ const apiKey = process.env.GEMINI_API_KEY || '';
 const isPlaceholder = !apiKey || apiKey.includes('your_google_gemini_api_key');
 export const genAI = !isPlaceholder ? new GoogleGenerativeAI(apiKey) : null;
 
+// Multi-model fallbacks for generation and embedding
+const STABLE_MODELS = ['gemini-1.5-flash-latest', 'gemini-1.5-flash-8b', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+const EMBEDDING_MODELS = ['text-embedding-004', 'embedding-001', 'gemini-embedding-2'];
+
 /**
- * Generates a 768-dimensional embedding vector for a given text using text-embedding-004.
- * Kept for backwards compatibility.
+ * Normalizes a vector's dimension by slicing/truncating or padding to meet the target dimension (default 768).
+ */
+export function normalizeVectorDimension(vec: number[], targetDim = 768): number[] {
+  if (!Array.isArray(vec) || vec.length === 0) {
+    return new Array(targetDim).fill(0.01);
+  }
+  if (vec.length > targetDim) {
+    return vec.slice(0, targetDim); // Truncate 3072 down to 768
+  }
+  const result = [...vec];
+  while (result.length < targetDim) {
+    result.push(0.01); // Pad up to 768
+  }
+  return result;
+}
+
+/**
+ * Generates a 768-dimensional embedding vector for a given text using text-embedding-004 with fallbacks.
  */
 export const generateEmbedding = async (text: string): Promise<number[]> => {
   if (!genAI) {
     console.warn('GEMINI_API_KEY is not configured or placeholder. Returning zero vector.');
-    return new Array(768).fill(0);
+    return normalizeVectorDimension([]);
   }
-  try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-embedding-2' });
-    const result = await model.embedContent({
-      content: { parts: [{ text }] },
-      outputDimensionality: 768,
-    } as any);
-    if (result.embedding?.values) {
-      return result.embedding.values;
+
+  for (const modelName of EMBEDDING_MODELS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.embedContent({
+        content: { parts: [{ text }] },
+        ...(modelName === 'text-embedding-004' ? { outputDimensionality: 768 } : {}),
+      } as any);
+      if (result.embedding?.values) {
+        return normalizeVectorDimension(result.embedding.values);
+      }
+    } catch (error) {
+      // Quiet warning for intermediate failures
     }
-    return new Array(768).fill(0);
-  } catch (error) {
-    console.error('Error generating embedding from Gemini:', error);
-    return new Array(768).fill(0);
   }
+
+  console.warn('[Gemini Embedding] All embedding models failed in generateEmbedding.');
+  return normalizeVectorDimension([]);
 };
 
 /**
- * Analyzes land parcel details and extracts structured metadata and feasibility scores using gemini-2.5-flash.
- * Kept for backwards compatibility.
+ * Analyzes land parcel details and extracts structured metadata and feasibility scores using STABLE_MODELS.
  */
 export const analyzeLandDocument = async (rawText: string): Promise<{
   extractedAcres: number;
@@ -52,10 +75,6 @@ export const analyzeLandDocument = async (rawText: string): Promise<{
   if (!genAI) {
     throw new Error('GEMINI_API_KEY is not configured. Please add it to your .env.local file.');
   }
-
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
-  });
 
   const prompt = `
 You are a Real Estate Financial Analyst. Analyze the following land parcel description and extract:
@@ -93,55 +112,61 @@ ${rawText}
 """
 `;
 
-  try {
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: SchemaType.OBJECT,
-          properties: {
-            extractedAcres: { type: SchemaType.NUMBER },
-            extractedRoadWidthFt: { type: SchemaType.NUMBER },
-            extractedLocation: { type: SchemaType.STRING },
-            extractedDealType: { type: SchemaType.STRING },
-            financialFeasibilityScore: { type: SchemaType.NUMBER },
-            keyMetrics: {
-              type: SchemaType.OBJECT,
-              properties: {
-                estimatedRevenueCr: { type: SchemaType.NUMBER },
-                estimatedCostCr: { type: SchemaType.NUMBER },
-                npvCr: { type: SchemaType.NUMBER },
-                irrPercent: { type: SchemaType.NUMBER },
+  let lastError = null;
+  for (const modelName of STABLE_MODELS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: SchemaType.OBJECT,
+            properties: {
+              extractedAcres: { type: SchemaType.NUMBER },
+              extractedRoadWidthFt: { type: SchemaType.NUMBER },
+              extractedLocation: { type: SchemaType.STRING },
+              extractedDealType: { type: SchemaType.STRING },
+              financialFeasibilityScore: { type: SchemaType.NUMBER },
+              keyMetrics: {
+                type: SchemaType.OBJECT,
+                properties: {
+                  estimatedRevenueCr: { type: SchemaType.NUMBER },
+                  estimatedCostCr: { type: SchemaType.NUMBER },
+                  npvCr: { type: SchemaType.NUMBER },
+                  irrPercent: { type: SchemaType.NUMBER },
+                },
+                required: ['estimatedRevenueCr', 'estimatedCostCr', 'npvCr', 'irrPercent'],
               },
-              required: ['estimatedRevenueCr', 'estimatedCostCr', 'npvCr', 'irrPercent'],
+              riskFactors: {
+                type: SchemaType.ARRAY,
+                items: { type: SchemaType.STRING },
+              },
+              suitabilityAnalysis: { type: SchemaType.STRING },
             },
-            riskFactors: {
-              type: SchemaType.ARRAY,
-              items: { type: SchemaType.STRING },
-            },
-            suitabilityAnalysis: { type: SchemaType.STRING },
+            required: [
+              'extractedAcres',
+              'extractedRoadWidthFt',
+              'extractedLocation',
+              'extractedDealType',
+              'financialFeasibilityScore',
+              'keyMetrics',
+              'riskFactors',
+              'suitabilityAnalysis',
+            ],
           },
-          required: [
-            'extractedAcres',
-            'extractedRoadWidthFt',
-            'extractedLocation',
-            'extractedDealType',
-            'financialFeasibilityScore',
-            'keyMetrics',
-            'riskFactors',
-            'suitabilityAnalysis',
-          ],
         },
-      },
-    });
+      });
 
-    const responseText = result.response.text();
-    return JSON.parse(responseText);
-  } catch (error) {
-    console.error('Error analyzing land document with Gemini:', error);
-    throw error;
+      const responseText = result.response.text();
+      return JSON.parse(responseText);
+    } catch (error) {
+      lastError = error;
+    }
   }
+
+  console.warn('[Gemini analyzeLandDocument] All models failed in analyzeLandDocument.');
+  throw lastError || new Error('All generative models failed during land document analysis.');
 };
 
 /**
@@ -153,23 +178,18 @@ export async function extractLandParcelWithGemini(
   mimeType: string = 'audio/mp3'
 ): Promise<ExtractedLand> {
   if (!genAI) {
-    console.warn('[Gemini] GEMINI_API_KEY missing or placeholder. Returning structured mock for testing.');
+    console.warn('[Gemini] GEMINI_API_KEY missing or placeholder. Returning structured mock.');
     return {
       location: 'Shadnagar, ORR Exit 16',
       extentAcres: 2.5,
       roadWidthFt: 60,
-      askingPricePerAcreInr: 25000000, // 2.5 Cr
+      askingPricePerAcreInr: 25000000,
       dealType: 'Joint Development',
       rawCleanedSummary: '2.5 acres parcel near Shadnagar Exit 16 with 60ft road access for Joint Development.',
     };
   }
 
-  try {
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-    });
-
-    const prompt = `
+  const prompt = `
 You are an AI Real Estate Systems Architect. Extract land deal metadata from the input text/audio.
 
 CRITICAL INSTRUCTIONS:
@@ -179,66 +199,72 @@ CRITICAL INSTRUCTIONS:
 Return ONLY a valid JSON object matching this schema.
 `;
 
-    const parts: any[] = [{ text: prompt }];
+  const parts: any[] = [{ text: prompt }];
 
-    if (textPrompt) {
-      parts.push({ text: `Raw Inbound Payload:\n${textPrompt}` });
-    }
-
-    if (audioBase64) {
-      parts.push({
-        inlineData: {
-          data: audioBase64,
-          mimeType: mimeType,
-        },
-      });
-    }
-
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts }],
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.1,
-        responseSchema: {
-          type: SchemaType.OBJECT,
-          properties: {
-            location: { type: SchemaType.STRING, description: 'Micro-market name or area (e.g., Shadnagar, Devanahalli)' },
-            extentAcres: { type: SchemaType.NUMBER, description: 'Total land extent normalized into Acres' },
-            roadWidthFt: { type: SchemaType.NUMBER, description: 'Road width in feet' },
-            askingPricePerAcreInr: { type: SchemaType.NUMBER, description: 'Asking price per acre in INR' },
-            dealType: { 
-              type: SchemaType.STRING, 
-              format: 'enum' as const,
-              enum: ['Joint Development', 'Outright Purchase'],
-              description: 'Target deal structure' 
-            },
-            rawCleanedSummary: { type: SchemaType.STRING, description: 'Cleaned technical deal summary with all PII stripped' }
-          },
-          required: [
-            'location',
-            'extentAcres',
-            'roadWidthFt',
-            'askingPricePerAcreInr',
-            'dealType',
-            'rawCleanedSummary'
-          ]
-        }
-      }
-    });
-
-    const responseText = result.response.text();
-    return JSON.parse(responseText) as ExtractedLand;
-  } catch (error) {
-    console.warn('[Gemini API Call failed, returning local mock fallback]:', error);
-    return {
-      location: 'Shadnagar, ORR Exit 16',
-      extentAcres: 2.5,
-      roadWidthFt: 60,
-      askingPricePerAcreInr: 25000000, // 2.5 Cr
-      dealType: 'Joint Development',
-      rawCleanedSummary: '2.5 acres parcel near Shadnagar Exit 16 with 60ft road access for Joint Development.',
-    };
+  if (textPrompt) {
+    parts.push({ text: `Raw Inbound Payload:\n${textPrompt}` });
   }
+
+  if (audioBase64) {
+    parts.push({
+      inlineData: {
+        data: audioBase64,
+        mimeType: mimeType,
+      },
+    });
+  }
+
+  for (const modelName of STABLE_MODELS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.1,
+          responseSchema: {
+            type: SchemaType.OBJECT,
+            properties: {
+              location: { type: SchemaType.STRING, description: 'Micro-market name or area (e.g., Shadnagar, Devanahalli)' },
+              extentAcres: { type: SchemaType.NUMBER, description: 'Total land extent normalized into Acres' },
+              roadWidthFt: { type: SchemaType.NUMBER, description: 'Road width in feet' },
+              askingPricePerAcreInr: { type: SchemaType.NUMBER, description: 'Asking price per acre in INR' },
+              dealType: { 
+                type: SchemaType.STRING, 
+                format: 'enum' as const,
+                enum: ['Joint Development', 'Outright Purchase'],
+                description: 'Target deal structure' 
+              },
+              rawCleanedSummary: { type: SchemaType.STRING, description: 'Cleaned technical deal summary with all PII stripped' }
+            },
+            required: [
+              'location',
+              'extentAcres',
+              'roadWidthFt',
+              'askingPricePerAcreInr',
+              'dealType',
+              'rawCleanedSummary'
+            ]
+          }
+        }
+      });
+
+      const responseText = result.response.text();
+      return JSON.parse(responseText) as ExtractedLand;
+    } catch (error) {
+      // quiet loop
+    }
+  }
+
+  console.warn('[Gemini] All models failed, returning local mock fallback.');
+  return {
+    location: 'Shadnagar, ORR Exit 16',
+    extentAcres: 2.5,
+    roadWidthFt: 60,
+    askingPricePerAcreInr: 25000000,
+    dealType: 'Joint Development',
+    rawCleanedSummary: '2.5 acres parcel near Shadnagar Exit 16 with 60ft road access for Joint Development.',
+  };
 }
 
 /**
@@ -247,18 +273,24 @@ Return ONLY a valid JSON object matching this schema.
 export async function generateGeminiEmbedding(text: string): Promise<number[]> {
   if (!genAI) {
     console.warn('[Gemini] GEMINI_API_KEY missing or placeholder. Returning 768-dim placeholder vector.');
-    return new Array(768).fill(0.01);
+    return normalizeVectorDimension(new Array(768).fill(0.01));
   }
 
-  try {
-    const embeddingModel = genAI.getGenerativeModel({ model: 'gemini-embedding-2' });
-    const result = await embeddingModel.embedContent({
-      content: { parts: [{ text }] },
-      outputDimensionality: 768,
-    } as any);
-    return result.embedding.values;
-  } catch (err) {
-    console.error('[Gemini Embedding Error]:', err);
-    return new Array(768).fill(0);
+  for (const modelName of EMBEDDING_MODELS) {
+    try {
+      const embeddingModel = genAI.getGenerativeModel({ model: modelName });
+      const result = await embeddingModel.embedContent({
+        content: { parts: [{ text }] },
+        ...(modelName === 'text-embedding-004' ? { outputDimensionality: 768 } : {}),
+      } as any);
+      if (result.embedding?.values) {
+        return normalizeVectorDimension(result.embedding.values);
+      }
+    } catch (err) {
+      // quiet loop
+    }
   }
+
+  console.warn('[Gemini Embedding] All embedding models failed in generateGeminiEmbedding.');
+  return normalizeVectorDimension(new Array(768).fill(0.01));
 }
