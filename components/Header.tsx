@@ -58,7 +58,7 @@ export function Header() {
       {/* Right: GitHub & Demo CTA */}
       <div className="flex items-center space-x-4">
         <a
-          href="https://github.com"
+          href="https://github.com/sanket9673/oneAcre"
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-[#A89F91] hover:text-[#F7F4EE] flex items-center space-x-1.5 transition-colors"

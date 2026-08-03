@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { IntakeSection } from '@/components/IntakeSection';
 import { StreamingExecutionLog, ExecutionStep } from '@/components/StreamingExecutionLog';
@@ -15,6 +15,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('feasibility');
   const [response, setResponse] = useState<IngestResponse | null>(null);
 
+  const resultsRef = useRef<HTMLDivElement>(null);
+
   const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([
     { id: '1', label: '⚡ Ingesting Audio / Vernacular Text Payload...', status: 'pending' },
     { id: '2', label: '⚡ Scrubbing PII (Phone numbers, Aadhaar, Landowner names)...', status: 'pending' },
@@ -23,7 +25,12 @@ export default function Home() {
     { id: '5', label: '⚡ Generating Gemini Embedding & Searching pgvector DB...', status: 'pending' },
   ]);
 
-  const handlePipelineSubmit = async (textInput: string, isAudioDemo: boolean = false) => {
+  const handlePipelineSubmit = async (
+    textInput: string, 
+    isAudioDemo: boolean = false,
+    audioBase64?: string,
+    mimeType?: string
+  ) => {
     setIsLoading(true);
     // When starting a new submission, we reset the response so the tabs hide
     setResponse(null);
@@ -50,7 +57,11 @@ export default function Home() {
       const res = await fetch('/api/ingest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ textPrompt: textInput }),
+        body: JSON.stringify({ 
+          textPrompt: textInput,
+          audioBase64,
+          mimeType
+        }),
       });
 
       if (!res.ok) {
@@ -88,6 +99,11 @@ export default function Home() {
 
       setResponse(data);
       setActiveTab('feasibility');
+
+      // Auto-scroll to results Ref with a smooth scroll action
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
     } catch (err) {
       console.error(err);
     } finally {
@@ -150,30 +166,34 @@ export default function Home() {
         {(isLoading || response) && <StreamingExecutionLog steps={executionSteps} />}
 
         {response && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
-            <TabsList className="bg-white/[0.03] border border-white/10 p-1 rounded-xl inline-flex w-auto">
-              <TabsTrigger 
-                value="feasibility" 
-                className="data-[state=active]:bg-[#D96B27] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-300 cursor-pointer"
-              >
-                Feasibility & Financials
-              </TabsTrigger>
-              <TabsTrigger 
-                value="developers" 
-                className="data-[state=active]:bg-[#D96B27] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-300 cursor-pointer"
-              >
-                Matched Developer Mandates ({response.matchedDevelopers?.length || 0})
-              </TabsTrigger>
-            </TabsList>
+          <div ref={resultsRef} className="w-full pt-4 scroll-mt-20">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <TabsList className="bg-[#121417] border border-white/10 p-1.5 rounded-xl inline-flex w-auto gap-2">
+                <TabsTrigger 
+                  value="feasibility" 
+                  className="data-[state=active]:bg-[#D96B27]/20 data-[state=active]:border-[#D96B27] data-[state=active]:text-amber-300 data-[state=active]:shadow-lg data-[state=active]:shadow-[#D96B27]/10 font-bold border border-transparent bg-transparent text-zinc-400 px-4 py-2.5 rounded-lg text-xs transition-all duration-300 cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>📊</span>
+                  <span>Feasibility & Financials</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="developers" 
+                  className="data-[state=active]:bg-[#D96B27]/20 data-[state=active]:border-[#D96B27] data-[state=active]:text-amber-300 data-[state=active]:shadow-lg data-[state=active]:shadow-[#D96B27]/10 font-bold border border-transparent bg-transparent text-zinc-400 px-4 py-2.5 rounded-lg text-xs transition-all duration-300 cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>🎯</span>
+                  <span>Matched Developer Mandates ({response.matchedDevelopers?.length || 0})</span>
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="feasibility" className="mt-0 outline-none">
-              <FeasibilityView report={response.feasibilityReport} />
-            </TabsContent>
+              <TabsContent value="feasibility" className="mt-0 outline-none">
+                <FeasibilityView report={response.feasibilityReport} />
+              </TabsContent>
 
-            <TabsContent value="developers" className="mt-0 outline-none">
-              <DeveloperMatchesView matches={response.matchedDevelopers} report={response.feasibilityReport} />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="developers" className="mt-0 outline-none">
+                <DeveloperMatchesView matches={response.matchedDevelopers} report={response.feasibilityReport} />
+              </TabsContent>
+            </Tabs>
+          </div>
         )}
       </main>
     </div>
