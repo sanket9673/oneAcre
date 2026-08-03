@@ -68,13 +68,16 @@ export function Header() {
           <ExternalLink className="w-3 h-3 opacity-50" />
         </a>
 
-        <button
-          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-semibold rounded-xl group bg-gradient-to-br from-[#D96B27]/40 to-transparent hover:from-[#D96B27] hover:to-[#F59E0B] transition-all cursor-pointer"
+        <a
+          href="https://linkedin.com/in/sanket-kisan-chavhan-930042273"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-xs font-semibold rounded-xl group bg-gradient-to-br from-[#D96B27]/40 to-transparent hover:from-[#D96B27] hover:to-[#F59E0B] transition-all cursor-pointer animate-none"
         >
           <span className="relative px-4 py-2 transition-all ease-in duration-75 bg-[#090A0F] rounded-[10px] group-hover:bg-opacity-0 text-[#F7F4EE] group-hover:text-white">
             Book Founder Demo
           </span>
-        </button>
+        </a>
       </div>
     </header>
   );
