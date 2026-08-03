@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CheckCircle2, Loader2, Cpu } from 'lucide-react';
+import { Cpu, CheckCircle2, Loader2 } from 'lucide-react';
 
 export interface ExecutionStep {
   id: string;
@@ -14,41 +14,71 @@ interface StreamingExecutionLogProps {
   steps: ExecutionStep[];
 }
 
+const stepInfo: Record<string, { label: string; time: string }> = {
+  '1': { label: 'Ingesting WhatsApp Audio...', time: '0.2s' },
+  '2': { label: 'Scrubbing PII & Normalizing Land Units...', time: '0.5s' },
+  '3': { label: 'Applying Telangana GO 168 Statutory Deductions (-15% NDA)...', time: '0.8s' },
+  '4': { label: 'Calculating BUA & GDV Financial Margins...', time: '1.1s' },
+  '5': { label: 'Querying Supabase pgvector DB — 5 Developer Matches Found', time: '1.4s' },
+};
+
 export function StreamingExecutionLog({ steps }: StreamingExecutionLogProps) {
   return (
-    <div className="bg-[#181512] border border-[#C5A059]/20 rounded-xl p-4 my-4 font-mono-data text-xs">
-      <div className="flex items-center justify-between border-b border-[#332D28] pb-2 mb-3">
-        <div className="flex items-center space-x-2 text-[#C5A059]">
+    <div className="bg-[#050608] border border-[#10B981]/25 rounded-2xl p-5 my-6 font-mono text-[11px] leading-relaxed shadow-2xl relative overflow-hidden">
+      {/* Background scanline effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
+
+      <div className="flex items-center justify-between border-b border-white/5 pb-2.5 mb-4">
+        <div className="flex items-center space-x-2 text-[#10B981]">
           <Cpu className="w-4 h-4 animate-pulse" />
-          <span className="font-bold tracking-wide uppercase">AI Execution Stream</span>
+          <span className="font-bold tracking-wider uppercase text-xs">AI Execution Stream Logs</span>
         </div>
-        <span className="text-[10px] text-[#A89F91]/50">Multimodal Agent Engine v1.0</span>
+        <span className="text-[9px] text-[#A89F91]/40 uppercase tracking-widest font-semibold">
+          Multimodal Agent Engine v2.0
+        </span>
       </div>
 
-      <div className="space-y-2.5">
-        {steps.map((step) => (
-          <div key={step.id} className="flex items-start space-x-3">
-            <div className="mt-0.5">
-              {step.status === 'completed' && <CheckCircle2 className="w-4 h-4 text-[#A8C39B]" />}
-              {step.status === 'active' && <Loader2 className="w-4 h-4 text-[#B8502B] animate-spin" />}
-              {step.status === 'pending' && <div className="w-4 h-4 rounded-full border border-[#332D28]" />}
+      <div className="space-y-3">
+        {steps.map((step) => {
+          const info = stepInfo[step.id] || { label: step.label, time: '0.0s' };
+          
+          return (
+            <div key={step.id} className="flex items-start space-x-3">
+              <div className="mt-0.5 shrink-0">
+                {step.status === 'completed' && (
+                  <span className="text-[#10B981] font-bold">✅</span>
+                )}
+                {step.status === 'active' && (
+                  <Loader2 className="w-3.5 h-3.5 text-[#D96B27] animate-spin" />
+                )}
+                {step.status === 'pending' && (
+                  <span className="text-white/20">⬡</span>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-[#A89F91]/40">[{info.time}]</span>
+                  <span
+                    className={`font-medium ${
+                      step.status === 'completed'
+                        ? 'text-white/90'
+                        : step.status === 'active'
+                        ? 'text-[#F59E0B]'
+                        : 'text-white/20'
+                    }`}
+                  >
+                    {info.label}
+                  </span>
+                </div>
+                {step.detail && step.status === 'active' && (
+                  <p className="text-[10px] text-[#A89F91] mt-1 pl-12 border-l border-white/10 italic">
+                    ↳ {step.detail}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex-1">
-              <p
-                className={`font-medium ${
-                  step.status === 'completed'
-                    ? 'text-[#F7F4EE]'
-                    : step.status === 'active'
-                    ? 'text-[#C5A059]'
-                    : 'text-[#A89F91]/40'
-                }`}
-              >
-                {step.label}
-              </p>
-              {step.detail && <p className="text-[11px] text-[#A89F91] mt-0.5 leading-relaxed">{step.detail}</p>}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

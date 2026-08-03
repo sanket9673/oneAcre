@@ -96,39 +96,81 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#181512] text-[#F7F4EE] flex flex-col font-sans-body relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#090A0F] text-[#F7F4EE] flex flex-col font-sans-body relative overflow-x-hidden">
       {/* Topographic Contour Background */}
       <TopographicHeroBg />
 
       <Header />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6 z-10">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-8 z-10">
+        {/* HERO SECTION */}
+        <div className="text-center py-8 md:py-12 space-y-4">
+          <div className="inline-flex items-center space-x-2 bg-white/[0.03] border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-md">
+            <span className="text-xs font-semibold bg-gradient-to-r from-[#D96B27] to-[#F59E0B] bg-clip-text text-transparent">
+              🚀 1acre Smart Deal Engine v2.0 • Multimodal AI Land Intelligence
+            </span>
+          </div>
+          
+          <h1 className="text-3xl md:text-5xl font-extrabold text-[#F7F4EE] leading-tight max-w-3xl mx-auto tracking-tight font-serif-heading">
+            Turn Unstructured WhatsApp Audio into{' '}
+            <span className="bg-gradient-to-r from-[#D96B27] via-[#F59E0B] to-[#10B981] bg-clip-text text-transparent">
+              High-Yield Land Deals
+            </span>{' '}
+            in 3 Seconds
+          </h1>
+
+          <p className="text-sm md:text-base text-[#A89F91] max-w-2xl mx-auto leading-relaxed">
+            Automated vernacular intake, GO 168 statutory planning math, and vector-matched developer routing for India's land market.
+          </p>
+
+          {/* QUICK METRICS BAR */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6">
+            <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 rounded-2xl text-center hover:border-[#D96B27]/40 transition duration-300">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#A89F91]">Max Permissible FSI</span>
+              <p className="text-xl md:text-2xl font-black text-[#F59E0B] mt-1 font-mono-data">3.5x</p>
+            </div>
+            <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 rounded-2xl text-center hover:border-[#D96B27]/40 transition duration-300">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#A89F91]">Statutory Surrender</span>
+              <p className="text-xl md:text-2xl font-black text-[#D96B27] mt-1 font-mono-data">-15%</p>
+            </div>
+            <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 rounded-2xl text-center hover:border-[#D96B27]/40 transition duration-300">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#A89F91]">Embedding Precision</span>
+              <p className="text-xl md:text-2xl font-black text-[#10B981] mt-1 font-mono-data">768-Dim</p>
+            </div>
+            <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4 rounded-2xl text-center hover:border-[#D96B27]/40 transition duration-300">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-[#A89F91]">Processing Time</span>
+              <p className="text-xl md:text-2xl font-black text-white mt-1 font-mono-data">&lt; 1.2s</p>
+            </div>
+          </div>
+        </div>
+
+        {/* INTAKE SECTION */}
         <IntakeSection onSubmit={handlePipelineSubmit} isLoading={isLoading} />
 
-        {isLoading || response ? <StreamingExecutionLog steps={executionSteps} /> : null}
+        {(isLoading || response) && <StreamingExecutionLog steps={executionSteps} />}
 
         {response && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-[#24201C] border border-[#332D28] p-1 rounded-xl">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
+            <TabsList className="bg-white/[0.03] border border-white/10 p-1 rounded-xl inline-flex w-auto">
               <TabsTrigger 
                 value="feasibility" 
-                className="data-[state=active]:bg-[#B8502B] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-350 cursor-pointer"
+                className="data-[state=active]:bg-[#D96B27] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-300 cursor-pointer"
               >
                 Feasibility & Financials
               </TabsTrigger>
               <TabsTrigger 
                 value="developers" 
-                className="data-[state=active]:bg-[#B8502B] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-350 cursor-pointer"
+                className="data-[state=active]:bg-[#D96B27] data-[state=active]:text-white text-[#A89F91] px-4 py-2 rounded-lg font-semibold text-xs transition-all duration-300 cursor-pointer"
               >
                 Matched Developer Mandates ({response.matchedDevelopers?.length || 0})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="feasibility" className="mt-4">
+            <TabsContent value="feasibility" className="mt-0 outline-none">
               <FeasibilityView report={response.feasibilityReport} />
             </TabsContent>
 
-            <TabsContent value="developers" className="mt-4">
+            <TabsContent value="developers" className="mt-0 outline-none">
               <DeveloperMatchesView matches={response.matchedDevelopers} report={response.feasibilityReport} />
             </TabsContent>
           </Tabs>
