@@ -9,6 +9,7 @@ export interface ExtractedLandInput {
   sellingPricePerSqFt?: number;      // Default: 5000
   constructionCostPerSqFt?: number;  // Default: 2800
   landownerSharePct?: number;        // Default: 40 (i.e., 40% Owner / 60% Developer)
+  state?: string;
 }
 
 export interface NormalizedLandUnits {
@@ -52,4 +53,6 @@ export interface FeasibilityReport {
   feasibilityScore: number; // 0 - 100
   viabilityRating: 'EXCELLENT' | 'VIABLE' | 'MARGINAL' | 'UNFEASIBLE';
   summary: string;
+  detectedState: string;
+  applicableByeLaw: string;
 }

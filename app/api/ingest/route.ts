@@ -71,7 +71,11 @@ export async function POST(req: Request) {
       sellingPricePerSqFt: 5000,
       constructionCostPerSqFt: 2800,
       landownerSharePct: 40,
+      state: extractedData.state,
     });
+
+    extractedData.detectedState = feasibilityReport.detectedState;
+    extractedData.applicableByeLaw = feasibilityReport.applicableByeLaw;
 
     // Step C: Vector Embedding & Supabase Vector Similarity Search
     const summaryToEmbed = `${extractedData.extentAcres} acres land in ${extractedData.location} on ${extractedData.roadWidthFt}ft road for ${extractedData.dealType}. ${extractedData.rawCleanedSummary}`;
@@ -123,15 +127,6 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.warn('[API Ingest Fallback Triggered]:', error.message || error);
     
-    const fallbackExtracted = {
-      location: 'Shadnagar, ORR Exit 16',
-      extentAcres: 2.5,
-      roadWidthFt: 60,
-      askingPricePerAcreInr: 25000000,
-      dealType: 'Joint Development' as const,
-      rawCleanedSummary: 'Fallback Ingestion active: 2.5 acres in Shadnagar with 60ft road for JV.',
-    };
-
     const fallbackFeasibility = calculateArchitectFeasibility({
       extentValue: 2.5,
       extentUnit: 'acres',
@@ -142,6 +137,18 @@ export async function POST(req: Request) {
       constructionCostPerSqFt: 2800,
       landownerSharePct: 40,
     });
+
+    const fallbackExtracted = {
+      location: 'Shadnagar, ORR Exit 16',
+      extentAcres: 2.5,
+      roadWidthFt: 60,
+      askingPricePerAcreInr: 25000000,
+      dealType: 'Joint Development' as const,
+      rawCleanedSummary: 'Fallback Ingestion active: 2.5 acres in Shadnagar with 60ft road for JV.',
+      state: undefined,
+      detectedState: fallbackFeasibility.detectedState,
+      applicableByeLaw: fallbackFeasibility.applicableByeLaw,
+    };
 
     const fallbackResponse: IngestResponse = {
       success: true,

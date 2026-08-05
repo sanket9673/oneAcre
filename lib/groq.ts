@@ -74,7 +74,8 @@ Return ONLY a valid JSON object matching this schema:
   "roadWidthFt": number,
   "askingPricePerAcreInr": number,
   "dealType": "Joint Development" | "Outright Purchase",
-  "rawCleanedSummary": "string"
+  "rawCleanedSummary": "string",
+  "state": "string" (optional, only if explicitly mentioned in the text/audio, e.g., "Telangana", "Karnataka", "Maharashtra", "Andhra Pradesh", "Tamil Nadu", "Delhi NCR")
 }
 `;
 

@@ -196,7 +196,7 @@ CRITICAL INSTRUCTIONS:
 1. PII SCRUBBING: Remove ALL personal phone numbers, email addresses, names of landowners/agents, bank accounts, and Aadhaar numbers.
 2. CONVERSION: Normalize land extent into decimal Acres (e.g., 40 Guntas = 1 Acre). Convert price into absolute INR (e.g., 2.5 Cr = 25000000).
 
-Return ONLY a valid JSON object matching this schema.
+Return ONLY a valid JSON object matching this schema. State detection should be optional (extract only if explicitly mentioned in text/audio).
 `;
 
   const parts: any[] = [{ text: prompt }];
@@ -235,7 +235,8 @@ Return ONLY a valid JSON object matching this schema.
                 enum: ['Joint Development', 'Outright Purchase'],
                 description: 'Target deal structure' 
               },
-              rawCleanedSummary: { type: SchemaType.STRING, description: 'Cleaned technical deal summary with all PII stripped' }
+              rawCleanedSummary: { type: SchemaType.STRING, description: 'Cleaned technical deal summary with all PII stripped' },
+              state: { type: SchemaType.STRING, description: 'State name if explicitly mentioned in the text/audio (e.g., Telangana, Karnataka, Maharashtra, Andhra Pradesh, Tamil Nadu, Delhi NCR)' }
             },
             required: [
               'location',

@@ -16,6 +16,9 @@ export const ExtractedLandSchema = z.object({
   askingPricePerAcreInr: z.number().describe('Asking price per acre in INR'),
   dealType: z.enum(['Joint Development', 'Outright Purchase']).describe('Target deal structure'),
   rawCleanedSummary: z.string().describe('Cleaned technical deal summary with all PII stripped'),
+  state: z.string().optional().describe('State name if explicitly mentioned in the text/audio'),
+  detectedState: z.string().optional().describe('Detected state name (e.g., Telangana, Karnataka, etc.)'),
+  applicableByeLaw: z.string().optional().describe('Applicable bye-law rules (e.g., Telangana GO 168 Rules, Karnataka BMRDA Bye-Laws)'),
 });
 
 export type ExtractedLand = z.infer<typeof ExtractedLandSchema>;
