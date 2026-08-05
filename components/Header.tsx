@@ -94,6 +94,7 @@ export function Header() {
           rel="noopener noreferrer"
           className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-[10px] sm:text-xs font-semibold rounded-xl group bg-gradient-to-br from-[#D96B27]/40 to-transparent hover:from-[#D96B27] hover:to-[#F59E0B] transition-all cursor-pointer animate-none"
         >
+
           <span className="relative px-2.5 py-1.5 sm:px-4 sm:py-2 transition-all ease-in duration-75 bg-[#090A0F] rounded-[10px] group-hover:bg-opacity-0 text-[#F7F4EE] group-hover:text-white">
             Book Demo
           </span>
