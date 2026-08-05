@@ -24,7 +24,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
 
   const dealStructureText = report.input.dealType || `${dev.ideal_deal_type} (40/60 Share)`;
 
-  const formattedText = `📍 *NEW LAND DEAL MATCH — 1acre Smart Deal Engine*
+  const formattedText = `📍 *NEW LAND DEAL MATCH — AcreGrid Smart Deal Engine*
 • Developer: ${dev.developer_name}
 • Location: ${report.input.location || 'Shadnagar'}
 • Extent: ${report.normalizedUnits.acres} Acres (${grossAreaYards} Sq. Yds)
@@ -32,7 +32,8 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
 • Permissible BUA: ${buaLakhSqFt} Lakh Sq. Ft (FSI ${report.planning.applicableFsi}x)
 • Financial Yield: GDV ₹${gdvCr} Cr | Developer Net Margin: ${devMargin}%
 • Deal Structure: ${dealStructureText}
-• Match Confidence: ${matchPct}%`;
+• Match Confidence: ${matchPct}%
+• View deal on AcreGrid: [Link]`;
 
   const handleCopy = async () => {
     try {
@@ -203,7 +204,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
       <div id="printable-dossier" className="hidden p-10 bg-white text-zinc-900 font-serif w-full max-w-4xl mx-auto">
         <div className="border-b-4 border-zinc-900 pb-4 mb-6 flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-zinc-950 animate-none">1ACRE.IN DEAL DOSSIER</h1>
+            <h1 className="text-3xl font-black tracking-tight text-zinc-950 animate-none">ACREGRID.IN DEAL DOSSIER</h1>
             <p className="text-xs text-zinc-500 uppercase tracking-widest mt-1 font-sans">
               AI Feasibility, statutory planning & buy-side mandate match
             </p>
@@ -321,7 +322,7 @@ export function DealRoutingModal({ dev, report, onClose }: DealRoutingModalProps
 
         {/* Print Footer */}
         <div className="border-t border-zinc-300 mt-12 pt-4 text-center text-xs text-zinc-400 font-sans">
-          <p>© 2026 1acre.in Land Intelligence Engine. Confidential Document for Internal Distribution Only.</p>
+          <p>© 2026 AcreGrid.in Land Intelligence Engine. Confidential Document for Internal Distribution Only.</p>
         </div>
       </div>
 

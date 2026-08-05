@@ -15,7 +15,7 @@ interface StreamingExecutionLogProps {
 }
 
 const stepInfo: Record<string, { label: string; time: string }> = {
-  '1': { label: 'Ingesting WhatsApp Audio...', time: '0.2s' },
+  '1': { label: 'AcreGrid AI Engine Processing...', time: '0.2s' },
   '2': { label: 'Scrubbing PII & Normalizing Land Units...', time: '0.5s' },
   '3': { label: 'Applying Telangana GO 168 Statutory Deductions (-15% NDA)...', time: '0.8s' },
   '4': { label: 'Calculating BUA & GDV Financial Margins...', time: '1.1s' },

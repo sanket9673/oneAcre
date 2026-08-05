@@ -24,13 +24,28 @@ export function Header() {
     <header className="w-full border-b border-white/10 bg-[#090A0F]/80 backdrop-blur-xl sticky top-0 z-50 px-3 sm:px-6 py-3 flex items-center justify-between">
       {/* Left: Brand Logo & Status */}
       <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-        <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-[#D96B27] flex-shrink-0 flex items-center justify-center font-bold text-white text-base sm:text-lg shadow-lg shadow-[#D96B27]/20 select-none">
-          1a
+        <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-amber-950/60 border border-[#D96B27]/40 flex-shrink-0 flex items-center justify-center shadow-lg shadow-amber-950/50 select-none">
+          <svg
+            viewBox="0 0 24 24"
+            className="w-4 h-4 sm:w-5 sm:h-5 text-[#F59E0B]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {/* Minimalist Topographic Grid lines */}
+            <path d="M4 9h16M4 15h16M9 4v16M15 4v16" strokeWidth="1" strokeDasharray="2 2" className="stroke-[#D96B27]/40" />
+            {/* Compass Circle */}
+            <circle cx="12" cy="12" r="8" className="stroke-[#F59E0B]" strokeWidth="1.5" />
+            {/* Compass needle */}
+            <polygon points="12,7 14.5,12 12,17 9.5,12" fill="currentColor" className="text-[#D96B27]" />
+          </svg>
         </div>
         <div className="min-w-0">
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <h1 className="font-serif-heading font-extrabold text-[#F7F4EE] text-sm sm:text-base tracking-tight truncate">
-              1acre.in
+              AcreGrid.in
             </h1>
             <span className="flex items-center space-x-1 bg-[#10B981]/10 text-[#10B981] text-[9px] sm:text-[10px] px-1.5 sm:px-2.5 py-0.5 rounded-full border border-[#10B981]/20 font-medium whitespace-nowrap">
               <span className="relative flex h-1 w-1 sm:h-1.5 sm:w-1.5">

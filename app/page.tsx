@@ -18,7 +18,7 @@ export default function Home() {
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const [executionSteps, setExecutionSteps] = useState<ExecutionStep[]>([
-    { id: '1', label: '⚡ Ingesting Audio / Vernacular Text Payload...', status: 'pending' },
+    { id: '1', label: '⚡ AcreGrid AI Engine Processing...', status: 'pending' },
     { id: '2', label: '⚡ Scrubbing PII (Phone numbers, Aadhaar, Landowner names)...', status: 'pending' },
     { id: '3', label: '⚡ Normalizing Land Units & Statutory Deductions (GO 168)...', status: 'pending' },
     { id: '4', label: '⚡ Computing Financial Yield & Developer Profit Margins...', status: 'pending' },
@@ -37,7 +37,7 @@ export default function Home() {
 
     // Reset steps
     setExecutionSteps([
-      { id: '1', label: '⚡ Ingesting Audio / Vernacular Text Payload...', status: 'active', detail: isAudioDemo ? 'Audio voice note loaded' : 'Raw text message received' },
+      { id: '1', label: '⚡ AcreGrid AI Engine Processing...', status: 'active', detail: isAudioDemo ? 'Audio voice note loaded' : 'Raw text message received' },
       { id: '2', label: '⚡ Scrubbing PII (Phone numbers, Aadhaar, Landowner names)...', status: 'pending' },
       { id: '3', label: '⚡ Normalizing Land Units & Statutory Deductions (GO 168)...', status: 'pending' },
       { id: '4', label: '⚡ Computing Financial Yield & Developer Profit Margins...', status: 'pending' },
@@ -123,7 +123,7 @@ export default function Home() {
         <div className="text-center py-6 md:py-12 space-y-4">
           <div className="inline-flex items-center space-x-2 bg-white/[0.03] border border-white/10 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full backdrop-blur-md">
             <span className="text-[10px] sm:text-xs font-semibold bg-gradient-to-r from-[#D96B27] to-[#F59E0B] bg-clip-text text-transparent">
-              🚀 1acre Smart Deal Engine v2.0 • Multimodal AI Land Intelligence
+              🚀 AcreGrid Smart Deal Engine v2.0 • Multimodal AI Land Intelligence
             </span>
           </div>
           
