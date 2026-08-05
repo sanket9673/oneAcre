@@ -6,7 +6,7 @@ import { calculateArchitectFeasibility } from '../lib/planning-engine';
 import { supabase } from '../lib/supabase';
 
 async function runApiIngestTest() {
-  console.log('=== 1ACRE MULTIMODAL INGESTION & VECTOR MATCHING TEST ===\n');
+  console.log('=== ACREGRID MULTIMODAL INGESTION & VECTOR MATCHING TEST ===\n');
 
   // Simulated raw unscrubbed WhatsApp message containing sensitive PII
   const rawWhatsappMessage = `

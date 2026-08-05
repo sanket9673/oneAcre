@@ -1,9 +1,9 @@
-# 🏞️ 1acre Smart Deal Engine
+# 🏞️ AcreGrid Smart Deal Engine
 Deployed Link : https://oneacredev.netlify.app/
 
 ### Multimodal AI Ingestion, Architectural Feasibility & Developer Matching Platform
 
-> Built for **1acre.in** — Organizing India's Land Market and automating structural real estate deals.
+> Built for **AcreGrid.in** — Organizing India's Land Market and automating structural real estate deals.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16_App_Router-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Typecheck-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -15,7 +15,7 @@ Deployed Link : https://oneacredev.netlify.app/
 
 ## 📌 Overview
 
-The **1acre Smart Deal Engine** is an intelligent web dashboard that automates the intake and evaluation of raw land deals in India. By converting unstructured voice notes, WhatsApp text pitches, and legacy records into clean parametric structures, it allows analysts and developers to immediately run statutory planning calculations and query matched developer mandates.
+The **AcreGrid Smart Deal Engine** is an intelligent web dashboard that automates the intake and evaluation of raw land deals in India. By converting unstructured voice notes, WhatsApp text pitches, and legacy records into clean parametric structures, it allows analysts and developers to immediately run statutory planning calculations and query matched developer mandates.
 
 ### Core Workflows
 1. **Multimodal Ingestion:** Handles raw text or audio inputs, scrubbing PII (names, phone numbers, Aadhaar details) automatically using Gemini.
@@ -54,7 +54,7 @@ graph TD
 
 ## 📐 Planning Engine Rules
 
-### 1. Land Unit Normalization (1acre Base Constants)
+### 1. Land Unit Normalization (AcreGrid Base Constants)
 Real estate metrics are normalized to standardized Acres and Sq. Yards according to the following formulas:
 - **1 Acre** = $40\text{ Guntas} = 4,840\text{ Sq. Yards} = 43,560\text{ Sq. Feet} = 100\text{ Cents}$
 - **1 Gunta** = $121\text{ Sq. Yards} = 1,089\text{ Sq. Feet}$
@@ -110,8 +110,8 @@ Real estate metrics are normalized to standardized Acres and Sq. Yards according
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/sanket9673/oneAcre.git
-cd oneAcre
+git clone https://github.com/sanket9673/AcreGrid.git
+cd AcreGrid
 npm install
 ```
 
@@ -165,4 +165,4 @@ npm run build
 ---
 
 ## 📄 License
-This project is built as an engineering prototype demonstrating AI-driven real-estate ingestion, automated feasibility analysis, and mandate search mechanics for **1acre.in**.
+This project is built as an engineering prototype demonstrating AI-driven real-estate ingestion, automated feasibility analysis, and mandate search mechanics for **AcreGrid.in**.

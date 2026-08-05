@@ -1,6 +1,6 @@
 import { calculateArchitectFeasibility } from '../lib/planning-engine';
 
-console.log('=== 1ACRE DETERMINISTIC PLANNING & JV FINANCIAL ENGINE TEST ===\n');
+console.log('=== ACREGRID DETERMINISTIC PLANNING & JV FINANCIAL ENGINE TEST ===\n');
 
 // Test Case: 2.5 Acres land parcel in Shadnagar on 60ft main road
 const testParcel = {

@@ -61,7 +61,7 @@ export async function extractLandWithGroq(
   }
 
   const systemPrompt = `
-You are an AI Real Estate Systems Architect. Extract land deal metadata from the input payload.
+You are an expert Indian Real Estate Ingestion Agent for AcreGrid.in. Extract land deal metadata from the input payload.
 
 CRITICAL INSTRUCTIONS:
 1. PII SCRUBBING: Remove ALL personal phone numbers, email addresses, names of landowners/agents, bank accounts, and Aadhaar numbers.
